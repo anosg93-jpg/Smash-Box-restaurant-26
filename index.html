@@ -7,11 +7,11 @@
     
     <!-- PWA Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff" id="themeColorMeta">
+    <meta name="theme-color" content="#000000" id="themeColorMeta">
     
     <!-- إعدادات التثبيت وتوافق الآيفون (iOS PWA Setup) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SMASH BOX">
     <link rel="apple-touch-icon" href="images/logosmash.png">
     <link rel="apple-touch-startup-image" href="images/logosmash.png">
@@ -775,7 +775,7 @@
             const isDelivery = selectedOrderType.includes('دليفري');
 
             if(!n || !p || (isDelivery && !a) || cart.length === 0) {
-                return alert("يرجى إكمال البيانات واختيار الأصناف قبل إرسال الطلب!");
+                return alert("يرجى إكمال البيانات وااختيار الأصناف قبل إرسال الطلب!");
             }
             
             let msg = `✨ *طلب جديد من أبلكيشن SMASH BOX* 🍔\n`
