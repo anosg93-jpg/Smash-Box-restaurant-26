@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smashbox-dynamic-v3';
+const CACHE_NAME = 'smashbox-dynamic-v4';
 
 // التثبيت وتجاوز الانتظار فور رفع كود جديد
 self.addEventListener('install', event => {

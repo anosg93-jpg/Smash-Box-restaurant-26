@@ -243,6 +243,32 @@
             border-top: 1px dashed var(--card-border); padding-top: 8px; margin-top: 2px;
         }
 
+        /* --- تصميم شيك لخانة الملاحظات --- */
+        .item-note-box {
+            width: 100%;
+            margin-top: 4px;
+        }
+        .item-note-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--main-text);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .item-note-input::placeholder {
+            color: var(--desc-text);
+            opacity: 0.8;
+        }
+        .item-note-input:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.2);
+        }
+
         .action-row { display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 2px; }
 
         .add-btn { 
@@ -289,6 +315,7 @@
         .cart-item-img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; }
         .cart-item-info { flex: 1; }
         .cart-item-name { font-weight: 700; font-size: 0.88rem; color: var(--main-text); }
+        .cart-item-note { font-size: 0.72rem; color: var(--accent-orange); font-weight: 700; display: block; margin-top: 2px; }
         .cart-item-price { color: var(--accent-orange); font-weight: 800; font-size: 0.82rem; display: block; }
         .remove-btn { color: #ff3b30; font-weight: 800; font-size: 0.75rem; cursor: pointer; }
 
@@ -649,6 +676,9 @@
                         <div class="food-info">
                             <span class="food-name">${item.name}</span>
                             ${priceHTML}
+                            <div class="item-note-box">
+                                <input type="text" class="item-note-input" id="note-${index}" placeholder="اكتب ملاحظاتك هنا (مثل: سبايسي، بدون بصل)...">
+                            </div>
                             <div class="action-row">
                                 <button class="add-btn" onclick="addToCartFromCard(event, this, ${index}, '${item.name}', '${item.img}')">اطلب الآن</button>
                             </div>
@@ -677,6 +707,10 @@
             const price = selectedOpt.getAttribute('data-price');
             const type = selectedOpt.getAttribute('data-type');
             
+            // جلب الملاحظات إن وجدت
+            const noteInput = document.getElementById(`note-${index}`);
+            const noteText = noteInput ? noteInput.value.trim() : "";
+            
             let fullName = name;
             const parentPriceContainer = card.querySelector('.size-picker-wrapper');
             if(parentPriceContainer && parentPriceContainer.querySelectorAll('.price-option').length > 1) {
@@ -690,11 +724,14 @@
                 btn.innerText = 'اطلب الآن';
             }, 1500);
 
-            addToCart(e, fullName, price, img);
+            addToCart(e, fullName, price, img, noteText);
+            
+            // تفريغ خانة الملاحظات بعد الإضافة
+            if(noteInput) noteInput.value = "";
         }
 
-        function addToCart(e, name, price, img) {
-            cart.push({name, price, img});
+        function addToCart(e, name, price, img, note = "") {
+            cart.push({name, price, img, note});
 
             const fly = document.createElement('div');
             fly.className = 'fly-item';
@@ -727,11 +764,13 @@
             currentTotal = 0;
             document.getElementById('cartItemsList').innerHTML = cart.map((item, idx) => {
                 currentTotal += parseFloat(item.price);
+                const noteHTML = item.note ? `<span class="cart-item-note">📝 ملاحظة: ${item.note}</span>` : '';
                 return `
                 <div class="cart-item-card">
                     <img src="${item.img}" class="cart-item-img" onerror="this.src='${IMAGES_PATH}default.jpg'">
                     <div class="cart-item-info">
                         <span class="cart-item-name">${item.name}</span>
+                        ${noteHTML}
                         <span class="cart-item-price">${item.price} ج.م</span>
                     </div>
                     <span class="remove-btn" onclick="removeFromCart(${idx})">حذف</span>
@@ -788,7 +827,11 @@
                       + (isDelivery ? `📍 *العنوان:* ${a}\n` : ``)
                       + `-----------------------------------\n`
                       + `🛒 *قائمة الأصناف المطلوبة:*\n` 
-                      + cart.map((i, idx) => `${idx + 1}. ${i.name} 👈 *${i.price} ج.م*`).join('\n')
+                      + cart.map((i, idx) => {
+                          let itemLine = `${idx + 1}. ${i.name} 👈 *${i.price} ج.م*`;
+                          if(i.note) itemLine += `\n   📝 _ملاحظة: ${i.note}_`;
+                          return itemLine;
+                      }).join('\n')
                       + `\n-----------------------------------\n`
                       + `💰 *الإجمالي النهائي:* *${currentTotal} ج.م*\n`
                       + `-----------------------------------\n`
