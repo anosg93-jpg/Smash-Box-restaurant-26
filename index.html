@@ -642,12 +642,17 @@
                 let fVal = item.colF && item.colF !== "0" && item.colF !== "" ? item.colF : null;
                 let gVal = item.colG && item.colG !== "0" && item.colG !== "" ? item.colG : null;
 
-                let isBoxCategory = item.category && item.category.includes("بوكس");
+                // التعرّف على "الساندونشات" (بالنون كما في الشيت) بالإضافة لـ "الساندوتشات" و "البوكسات"
+                let isEnglishCategory = item.category && (
+                    item.category.includes("بوكس") || 
+                    item.category.includes("ساند") || 
+                    item.category.includes("سند")
+                );
 
-                if (dVal) optionsList.push({ label: isBoxCategory ? "Single" : "صغير", price: dVal });
-                if (eVal) optionsList.push({ label: isBoxCategory ? "Double" : "كبير", price: eVal });
-                if (fVal) optionsList.push({ label: isBoxCategory ? "Triple" : "عادي", price: fVal });
-                if (gVal) optionsList.push({ label: isBoxCategory ? "Quarter" : "عائلي", price: gVal });
+                if (dVal) optionsList.push({ label: isEnglishCategory ? "Single" : "صغير", price: dVal });
+                if (eVal) optionsList.push({ label: isEnglishCategory ? "Double" : "كبير", price: eVal });
+                if (fVal) optionsList.push({ label: isEnglishCategory ? "Triple" : "عادي", price: fVal });
+                if (gVal) optionsList.push({ label: isEnglishCategory ? "Quarter" : "عائلي", price: gVal });
 
                 let priceHTML = '';
                 if(optionsList.length > 1) {
